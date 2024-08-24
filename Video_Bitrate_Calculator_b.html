@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Bitrate Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<style>
+	body {
+	background-color: #3087e7;
+    color: white;
+	}
+	</style>
+</head>
+<body class="container mt-5">
+
+<h2 class="mb-4">Video Bitrate Calculator</h2>
+
+<form>
+    <div class="form-group">
+        <label for="fileSize">File Size (MB):</label>
+        <input type="number" class="form-control" id="fileSize" value="1000">
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="durationHours">Duration (Hours):</label>
+            <input type="number" class="form-control" id="durationHours" value="1">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="durationMinutes">Duration (Minutes):</label>
+            <input type="number" class="form-control" id="durationMinutes" value="30">
+        </div>
+        <div class="form-group col-md-4">
+            <label for="durationSeconds">Duration (Seconds):</label>
+            <input type="number" class="form-control" id="durationSeconds" value="0">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="audioBitrate">Audio Bitrate (kbps):</label>
+        <input type="number" class="form-control" id="audioBitrate" value="192">
+    </div>
+
+    <div class="form-group">
+        <label for="videoBitrate">Video Bitrate (kbps):</label>
+        <input type="number" class="form-control" id="videoBitrate" readonly>
+    </div>
+
+    <div class="form-group">
+        <label for="videoBitrateRounded">Video Bitrate 2 (kbps) (Rounded):</label>
+        <input type="number" class="form-control" id="videoBitrateRounded" readonly>
+    </div>
+</form>
+
+<script>
+    function calculateBitrate() {
+        // Get input values
+        let fileSizeMB = parseFloat($('#fileSize').val());
+
+        // Get duration values and convert to total seconds
+        let hours = parseFloat($('#durationHours').val()) || 0;
+        let minutes = parseFloat($('#durationMinutes').val()) || 0;
+        let seconds = parseFloat($('#durationSeconds').val()) || 0;
+        let durationSec = (hours * 3600) + (minutes * 60) + seconds;
+
+        let audioBitrateKbps = parseFloat($('#audioBitrate').val());
+
+        // Convert file size to bits
+        let totalBits = fileSizeMB * 1024 * 1024 * 8;
+
+        // Calculate total audio bits
+        let totalAudioBits = audioBitrateKbps * 1000 * durationSec;
+
+        // Calculate remaining bits for video
+        let totalVideoBits = totalBits - totalAudioBits;
+
+        // Calculate video bitrate in kbps
+        let videoBitrateKbps = totalVideoBits / (durationSec * 1000);
+
+        // Update video bitrate input fields
+        $('#videoBitrate').val(videoBitrateKbps.toFixed(2));
+        $('#videoBitrateRounded').val(Math.round(videoBitrateKbps));
+    }
+
+    // Call the calculate function on input change
+    $('input').on('input', function() {
+        calculateBitrate();
+    });
+
+    // Initial calculation
+    calculateBitrate();
+</script>
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
